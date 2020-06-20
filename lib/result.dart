@@ -79,9 +79,6 @@ class _ResultState extends State<Result> {
                   fontSize: 19,
                 ),
               ),
-              subtitle: Text(
-                currentDateTime.toIso8601String(),
-              ),
               trailing: Text(
                 onlyTimeFormat(widget.datas[index]['fin']),
                 style: TextStyle(
