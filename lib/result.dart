@@ -39,8 +39,12 @@ class _ResultState extends State<Result> {
   }
 
   Color getCardColor(String startTimeText, String endTimeText) {
-    DateTime startTime = DateTime.parse(startTimeText);
-    DateTime endTime = DateTime.parse(endTimeText);
+    DateTime temp1 = DateTime.parse(startTimeText);
+    DateTime temp2 = DateTime.parse(endTimeText);
+    DateTime startTime = DateTime(currentDateTime.year, currentDateTime.month,
+        currentDateTime.day, temp1.hour, temp1.minute, temp1.second);
+    DateTime endTime = DateTime(currentDateTime.year, currentDateTime.month,
+        currentDateTime.day, temp2.hour, temp2.minute, temp2.second);
     if (startTime.isBefore(currentDateTime) &&
         endTime.isAfter(currentDateTime)) {
       return Colors.green;

@@ -34,7 +34,9 @@ class _HomePageState extends State<HomePage> {
     for (int i = 0; i < index; i++) {
       String activityName = fromDatabase[i]['actName'];
       String startTimeText = fromDatabase[i]['init'];
-      DateTime startTime = DateTime.parse(startTimeText);
+      DateTime temp = DateTime.parse(startTimeText);
+      DateTime startTime = DateTime(currentDateTime.year, currentDateTime.month,
+          currentDateTime.day, temp.hour, temp.minute, temp.second);
 
       if (startTime.hour == currentDateTime.hour &&
           startTime.minute == currentDateTime.minute &&
