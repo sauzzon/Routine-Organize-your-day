@@ -1,26 +1,27 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
+import 'database_helper.dart';
 
-class Result extends StatefulWidget {
-  Result({Key key, this.datas}) : super(key: key);
-  final List<Map<String, dynamic>> datas;
+class ShowIndividualRoutine extends StatefulWidget {
+  ShowIndividualRoutine({Key key, this.personName}) : super(key: key);
+  final String personName;
   @override
-  _ResultState createState() => _ResultState();
+  _ShowIndividualRoutineState createState() => _ShowIndividualRoutineState();
 }
 
-class _ResultState extends State<Result> {
+class _ShowIndividualRoutineState extends State<ShowIndividualRoutine> {
   DateTime currentDateTime = DateTime.now();
   @override
   void initState() {
+    super.initState();
+    getActivitiesFromDatabase();
     Timer.periodic(
       Duration(seconds: 1),
       (Timer t) {
         _getTime();
       },
     );
-    super.initState();
   }
 
   void _getTime() {
@@ -57,34 +58,42 @@ class _ResultState extends State<Result> {
     return null;
   }
 
+  List<Map<String, dynamic>> datas = [];
+  getActivitiesFromDatabase() async {
+    List<Map<String, dynamic>> temp =
+        await DatabaseHelper.instance.queryActivities(widget.personName);
+    setState(() {
+      datas = temp;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Show Routine'),
+        title: Text('Show Individual Routine'),
       ),
       body: ListView.builder(
-        itemCount: widget.datas.length,
+        itemCount: datas.length,
         itemBuilder: (BuildContext context, int index) {
           return Card(
-            color: getCardColor(
-                widget.datas[index]['init'], widget.datas[index]['fin']),
+            color: getCardColor(datas[index]['init'], datas[index]['fin']),
             child: ListTile(
               leading: Text(
-                onlyTimeFormat(widget.datas[index]['init']),
+                onlyTimeFormat(datas[index]['init']),
                 style: TextStyle(
                   fontSize: 17,
                 ),
               ),
               title: Text(
-                widget.datas[index]['actName'],
+                datas[index]['actName'],
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 19,
                 ),
               ),
               trailing: Text(
-                onlyTimeFormat(widget.datas[index]['fin']),
+                onlyTimeFormat(datas[index]['fin']),
                 style: TextStyle(
                   fontSize: 17,
                 ),

@@ -113,7 +113,7 @@ class _AddRoutineState extends State<AddRoutine> {
     );
   }
 
-  String _name;
+  String _personName;
   List<String> _actName = [];
   List<DateTime> _initTime = [];
   List<DateTime> _endTime = [];
@@ -153,8 +153,8 @@ class _AddRoutineState extends State<AddRoutine> {
                         return null;
                     },
                     onSaved: (String value) {
-                      _name = value;
-                      print(_name);
+                      _personName = value;
+                      print(_personName);
                     },
                   ),
                   SizedBox(
@@ -173,9 +173,12 @@ class _AddRoutineState extends State<AddRoutine> {
                         return;
                       }
                       _formkey.currentState.save();
-
+                      DatabaseHelper.instance.createNewTable(_personName);
+                      DatabaseHelper.instance.insertPersonName(
+                          {DatabaseHelper.columnPersonName: _personName});
                       for (int index = 0; index < _actName.length; index++) {
-                        int i = await DatabaseHelper.instance.insert({
+                        int i = await DatabaseHelper.instance
+                            .insertActivities(_personName, {
                           DatabaseHelper.columnactName: _actName[index],
                           DatabaseHelper.columnInitial:
                               _initTime[index].toIso8601String(),

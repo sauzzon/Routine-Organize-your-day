@@ -11,6 +11,8 @@ class DatabaseHelper {
   static final columnactName = 'actName';
   static final columnInitial = 'init';
   static final columnFinal = 'fin';
+  static final columnPersonName = 'personName';
+  static final personNameTable = 'personNameTable';
   //making a singleton class
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
@@ -36,6 +38,11 @@ class DatabaseHelper {
         $columnInitial TEXT NOT NULL,
         $columnFinal TEXT NOT NULL)
     ''');
+    db.execute('''
+        CREATE TABLE $personNameTable(
+         $columnId INTEGER PRIMARY KEY,
+       $columnPersonName TEXT NOT NULL)
+    ''');
     return null;
   }
 
@@ -45,9 +52,30 @@ class DatabaseHelper {
     return await db.insert(_tableName, row);
   }
 
+  Future<int> insertPersonName(Map<String, dynamic> row) async {
+    Database db = await instance.database;
+    return await db.insert(personNameTable, row);
+  }
+
+  Future<int> insertActivities(
+      String personName, Map<String, dynamic> row) async {
+    Database db = await instance.database;
+    return await db.insert(personName, row);
+  }
+
   Future<List<Map<String, dynamic>>> queryAll() async {
     Database db = await instance.database;
     return await db.query(_tableName);
+  }
+
+  Future<List<Map<String, dynamic>>> queryPersonNames() async {
+    Database db = await instance.database;
+    return await db.query(personNameTable);
+  }
+
+  Future<List<Map<String, dynamic>>> queryActivities(String table) async {
+    Database db = await instance.database;
+    return await db.query(table);
   }
 
   Future<int> update(Map<String, dynamic> row) async {
@@ -57,8 +85,23 @@ class DatabaseHelper {
         .update(_tableName, row, where: '$columnId=?', whereArgs: [id]);
   }
 
-  Future delete() async {
+  Future delete(String table) async {
     Database db = await instance.database;
-    return await db.delete(_tableName);
+    await db.delete(personNameTable,
+        where: '$columnPersonName=?', whereArgs: [table]);
+    return await db.delete(table);
+  }
+
+  Future createNewTable(String newTable) async {
+    Database db = await instance.database;
+    db.execute('''
+        CREATE TABLE $newTable(
+        $columnId INTEGER PRIMARY KEY,
+        $columnactName TEXT NOT NULL,
+        $columnInitial TEXT NOT NULL,
+        $columnFinal TEXT NOT NULL)
+    ''');
+    print('New table $newTable is created');
+    return null;
   }
 }
