@@ -1,26 +1,45 @@
 import 'package:flutter/material.dart';
 import 'database_helper.dart';
 
-class EditActivity extends StatefulWidget {
-  EditActivity({Key key, this.currentDate, this.personName, this.activityName})
+class AddOrEditActivity extends StatefulWidget {
+  AddOrEditActivity(
+      {Key key, this.currentDate, this.personName, this.activityName})
       : super(key: key);
   final DateTime currentDate;
   final String personName;
   final String activityName;
   @override
-  _EditActivityState createState() => _EditActivityState();
+  _AddOrEditActivityState createState() => _AddOrEditActivityState();
 }
 
-class _EditActivityState extends State<EditActivity> {
+class _AddOrEditActivityState extends State<AddOrEditActivity> {
   String _newActivityName;
   String _newInitialTime;
   String _newFinalTime;
   TextEditingController timeCtl1 = TextEditingController();
   TextEditingController timeCtl2 = TextEditingController();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+
+  String getButtonText() {
+    if (widget.activityName == 'Add New Activity') {
+      return 'ADD';
+    } else {
+      return 'Update';
+    }
+  }
+
+  String getInitialActivityValue() {
+    if (widget.activityName != 'Add New Activity') {
+      return widget.activityName;
+    } else {
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Form(
@@ -33,6 +52,7 @@ class _EditActivityState extends State<EditActivity> {
                     Expanded(
                       flex: 2,
                       child: TextFormField(
+                        initialValue: getInitialActivityValue(),
                         style: TextStyle(
                           fontSize: 20,
                         ),
@@ -130,18 +150,28 @@ class _EditActivityState extends State<EditActivity> {
                       return;
                     }
                     _formkey.currentState.save();
-                    int updatedId = await DatabaseHelper.instance
-                        .update(widget.personName, widget.activityName, {
-                      DatabaseHelper.columnactName: _newActivityName,
-                      DatabaseHelper.columnInitial: _newInitialTime,
-                      DatabaseHelper.columnFinal: _newFinalTime,
-                    });
-                    print(updatedId);
+
+                    if (widget.activityName == 'Add New Activity') {
+                      await DatabaseHelper.instance
+                          .insertActivities(widget.personName, {
+                        DatabaseHelper.columnactName: _newActivityName,
+                        DatabaseHelper.columnInitial: _newInitialTime,
+                        DatabaseHelper.columnFinal: _newFinalTime
+                      });
+                    } else {
+                      int updatedId = await DatabaseHelper.instance
+                          .update(widget.personName, widget.activityName, {
+                        DatabaseHelper.columnactName: _newActivityName,
+                        DatabaseHelper.columnInitial: _newInitialTime,
+                        DatabaseHelper.columnFinal: _newFinalTime,
+                      });
+                      print(updatedId);
+                    }
                     Navigator.pop(context);
                   },
                   color: Colors.blue,
                   child: Text(
-                    'Update',
+                    getButtonText(),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 17,

@@ -173,9 +173,11 @@ class _AddRoutineState extends State<AddRoutine> {
                         return;
                       }
                       _formkey.currentState.save();
+
                       DatabaseHelper.instance.createNewTable(_personName);
                       DatabaseHelper.instance.insertPersonName(
                           {DatabaseHelper.columnPersonName: _personName});
+
                       for (int index = 0; index < _actName.length; index++) {
                         int i = await DatabaseHelper.instance
                             .insertActivities(_personName, {

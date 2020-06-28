@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'database_helper.dart';
-import 'edit_activity.dart';
+import 'add_or_edit_activity.dart';
 
 class ShowIndividualRoutine extends StatefulWidget {
   ShowIndividualRoutine({Key key, this.personName}) : super(key: key);
@@ -93,7 +93,7 @@ class _ShowIndividualRoutineState extends State<ShowIndividualRoutine> {
                     await Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => EditActivity(
+                            builder: (context) => AddOrEditActivity(
                                   currentDate: currentDateTime,
                                   personName: widget.personName,
                                   activityName: datas[index]['actName'],
@@ -143,6 +143,21 @@ class _ShowIndividualRoutineState extends State<ShowIndividualRoutine> {
             ),
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => AddOrEditActivity(
+                        currentDate: currentDateTime,
+                        personName: widget.personName,
+                        activityName: 'Add New Activity',
+                      )));
+          getActivitiesFromDatabase();
+        },
+        backgroundColor: Colors.blue,
+        child: Icon(Icons.add),
       ),
     );
   }
