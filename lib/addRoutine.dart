@@ -119,6 +119,7 @@ class _AddRoutineState extends State<AddRoutine> {
   List<DateTime> _endTime = [];
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   List<Widget> activities = [];
+  bool isPersonNameRepeated = false;
 
   @override
   Widget build(BuildContext context) {
@@ -174,9 +175,21 @@ class _AddRoutineState extends State<AddRoutine> {
                       }
                       _formkey.currentState.save();
 
-                      DatabaseHelper.instance.createNewTable(_personName);
-                      DatabaseHelper.instance.insertPersonName(
-                          {DatabaseHelper.columnPersonName: _personName});
+                      List<Map<String, dynamic>> temp =
+                          await DatabaseHelper.instance.queryPersonNames();
+                      int length = temp.length;
+                      for (int j = 0; j < length; j++) {
+                        if (temp[j]['personName'] == _personName) {
+                          isPersonNameRepeated = true;
+                          break;
+                        }
+                      }
+                      if (!isPersonNameRepeated) {
+                        DatabaseHelper.instance.createNewTable(_personName);
+                        DatabaseHelper.instance.insertPersonName(
+                            {DatabaseHelper.columnPersonName: _personName});
+                        isPersonNameRepeated = false;
+                      }
 
                       for (int index = 0; index < _actName.length; index++) {
                         int i = await DatabaseHelper.instance

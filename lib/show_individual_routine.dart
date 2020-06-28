@@ -97,6 +97,7 @@ class _ShowIndividualRoutineState extends State<ShowIndividualRoutine> {
                                   currentDate: currentDateTime,
                                   personName: widget.personName,
                                   activityName: datas[index]['actName'],
+                                  activityID: datas[index]['id'],
                                 )));
                     getActivitiesFromDatabase();
                   },
@@ -112,7 +113,7 @@ class _ShowIndividualRoutineState extends State<ShowIndividualRoutine> {
                       btnOkOnPress: () async {
                         int rowsEffected = await DatabaseHelper.instance
                             .deleteActivity(
-                                widget.personName, datas[index]['actName']);
+                                widget.personName, datas[index]['id']);
                         print(rowsEffected);
                       },
                     ).show();

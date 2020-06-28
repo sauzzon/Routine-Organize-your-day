@@ -3,11 +3,12 @@ import 'database_helper.dart';
 
 class AddOrEditActivity extends StatefulWidget {
   AddOrEditActivity(
-      {Key key, this.currentDate, this.personName, this.activityName})
+      {Key key, this.currentDate, this.personName, this.activityName,this.activityID})
       : super(key: key);
   final DateTime currentDate;
   final String personName;
   final String activityName;
+  final int activityID;
   @override
   _AddOrEditActivityState createState() => _AddOrEditActivityState();
 }
@@ -160,7 +161,7 @@ class _AddOrEditActivityState extends State<AddOrEditActivity> {
                       });
                     } else {
                       int updatedId = await DatabaseHelper.instance
-                          .update(widget.personName, widget.activityName, {
+                          .update(widget.personName, widget.activityID, {
                         DatabaseHelper.columnactName: _newActivityName,
                         DatabaseHelper.columnInitial: _newInitialTime,
                         DatabaseHelper.columnFinal: _newFinalTime,

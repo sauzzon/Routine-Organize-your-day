@@ -7,7 +7,7 @@ class DatabaseHelper {
   static final _dbName = 'myDatabase.db';
   static final _dbVersion = 1;
   static final _tableName = 'myTable';
-  static final columnId = '_id';
+  static final columnId = 'id';
   static final columnactName = 'actName';
   static final columnInitial = 'init';
   static final columnFinal = 'fin';
@@ -31,13 +31,6 @@ class DatabaseHelper {
   }
 
   Future _onCreate(Database db, int version) {
-    db.execute('''
-        CREATE TABLE $_tableName(
-         $columnId INTEGER PRIMARY KEY,
-        $columnactName TEXT NOT NULL,
-        $columnInitial TEXT NOT NULL,
-        $columnFinal TEXT NOT NULL)
-    ''');
     db.execute('''
         CREATE TABLE $personNameTable(
          $columnId INTEGER PRIMARY KEY,
@@ -79,10 +72,10 @@ class DatabaseHelper {
   }
 
   Future<int> update(
-      String personName, String activityName, Map<String, dynamic> row) async {
+      String personName, int iD, Map<String, dynamic> row) async {
     Database db = await instance.database;
-    return await db.update(personName, row,
-        where: '$columnactName=?', whereArgs: [activityName]);
+    return await db
+        .update(personName, row, where: '$columnId=?', whereArgs: [iD]);
   }
 
   Future delete(String table) async {
@@ -92,10 +85,9 @@ class DatabaseHelper {
     return await db.delete(table);
   }
 
-  Future deleteActivity(String name, String activityName) async {
+  Future deleteActivity(String name, int iD) async {
     Database db = await instance.database;
-    return await db
-        .delete(name, where: '$columnactName=?', whereArgs: [activityName]);
+    return await db.delete(name, where: '$columnId=?', whereArgs: [iD]);
   }
 
   Future createNewTable(String newTable) async {
