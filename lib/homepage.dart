@@ -26,22 +26,33 @@ class _HomePageState extends State<HomePage> {
   }
 
   checkNotification() async {
-    List<Map<String, dynamic>> fromDatabase =
-        await DatabaseHelper.instance.queryAll();
-    int index = fromDatabase.length;
+    List<Map<String, dynamic>> namesFromDatabase =
+        await DatabaseHelper.instance.queryPersonNames();
+    int len = namesFromDatabase.length;
+    for (int i = 0; i < len; i++) {
+      List<Map<String, dynamic>> activitiesFromDatabase = await DatabaseHelper
+          .instance
+          .queryActivities(namesFromDatabase[i]['personName']);
+      int index = activitiesFromDatabase.length;
+      for (int j = 0; j < index; j++) {
+        String activityName = activitiesFromDatabase[j]['actName'];
+        String startTimeText = activitiesFromDatabase[j]['init'];
+        DateTime temp = DateTime.parse(startTimeText);
+        DateTime startTime = DateTime(
+            currentDateTime.year,
+            currentDateTime.month,
+            currentDateTime.day,
+            temp.hour,
+            temp.minute,
+            temp.second);
 
-    for (int i = 0; i < index; i++) {
-      String activityName = fromDatabase[i]['actName'];
-      String startTimeText = fromDatabase[i]['init'];
-      DateTime temp = DateTime.parse(startTimeText);
-      DateTime startTime = DateTime(currentDateTime.year, currentDateTime.month,
-          currentDateTime.day, temp.hour, temp.minute, temp.second);
-
-      if (startTime.hour == currentDateTime.hour &&
-          startTime.minute == currentDateTime.minute &&
-          startTime.second == currentDateTime.second) {
-        LocalNotification localNotification = LocalNotification();
-        localNotification.showNotifications(activityName);
+        if (startTime.hour == currentDateTime.hour &&
+            startTime.minute == currentDateTime.minute &&
+            startTime.second == currentDateTime.second) {
+          LocalNotification localNotification = LocalNotification();
+          localNotification.showNotifications(
+              namesFromDatabase[i]['personName'], activityName);
+        }
       }
     }
   }

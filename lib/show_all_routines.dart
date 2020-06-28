@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'database_helper.dart';
 import 'show_individual_routine.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
+
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 class ShowAllRoutines extends StatefulWidget {
   @override
@@ -28,7 +29,7 @@ class _ShowAllRoutinesState extends State<ShowAllRoutines> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Show All Routines'),
+        title: Text('Show Routines'),
       ),
       body: ListView.builder(
         itemCount: nameListFromDatabase.length,
@@ -52,40 +53,18 @@ class _ShowAllRoutinesState extends State<ShowAllRoutines> {
               ),
               trailing: FlatButton(
                 onPressed: () async {
-                  await Alert(
+                  await AwesomeDialog(
                     context: context,
-                    type: AlertType.warning,
-                    title: "ALERT",
-                    desc: "Do you want to delete the routine?",
-                    buttons: [
-                      DialogButton(
-                        child: Text(
-                          "Delete",
-                          style: TextStyle(color: Colors.white, fontSize: 20),
-                        ),
-                        onPressed: () async {
-                          int rowsEffected = await DatabaseHelper.instance
-                              .delete(
-                                  nameListFromDatabase[index]['personName']);
-                          print(rowsEffected);
-                          Navigator.pop(context);
-                        },
-                        color: Color.fromRGBO(0, 179, 134, 1.0),
-                      ),
-                      DialogButton(
-                        child: Text(
-                          "Cancel",
-                          style: TextStyle(color: Colors.white, fontSize: 20),
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        gradient: LinearGradient(colors: [
-                          Color.fromRGBO(116, 116, 191, 1.0),
-                          Color.fromRGBO(52, 138, 199, 1.0)
-                        ]),
-                      )
-                    ],
+                    dialogType: DialogType.INFO,
+                    animType: AnimType.BOTTOMSLIDE,
+                    title: 'Alert',
+                    desc: 'Do you want to delete the routine?',
+                    btnCancelOnPress: () {},
+                    btnOkOnPress: () async {
+                      int rowsEffected = await DatabaseHelper.instance
+                          .delete(nameListFromDatabase[index]['personName']);
+                      print(rowsEffected);
+                    },
                   ).show();
                   getNameListFromDatabase();
                 },

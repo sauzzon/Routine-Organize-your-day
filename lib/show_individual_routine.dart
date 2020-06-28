@@ -1,7 +1,8 @@
 import 'dart:async';
-
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'database_helper.dart';
+import 'edit_activity.dart';
 
 class ShowIndividualRoutine extends StatefulWidget {
   ShowIndividualRoutine({Key key, this.personName}) : super(key: key);
@@ -71,7 +72,7 @@ class _ShowIndividualRoutineState extends State<ShowIndividualRoutine> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Show Individual Routine'),
+        title: Text(widget.personName + "'s" + " Routine"),
       ),
       body: ListView.builder(
         itemCount: datas.length,
@@ -79,6 +80,47 @@ class _ShowIndividualRoutineState extends State<ShowIndividualRoutine> {
           return Card(
             color: getCardColor(datas[index]['init'], datas[index]['fin']),
             child: ListTile(
+              onLongPress: () async {
+                await AwesomeDialog(
+                  context: context,
+                  dialogType: DialogType.INFO,
+                  animType: AnimType.BOTTOMSLIDE,
+                  title: 'Activity selected',
+                  desc: '',
+                  btnCancelText: 'Edit',
+                  btnOkText: 'Delete',
+                  btnCancelOnPress: () async {
+                    await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EditActivity(
+                                  currentDate: currentDateTime,
+                                  personName: widget.personName,
+                                  activityName: datas[index]['actName'],
+                                )));
+                    getActivitiesFromDatabase();
+                  },
+                  btnOkOnPress: () async {
+                    await AwesomeDialog(
+                      context: context,
+                      dialogType: DialogType.INFO,
+                      animType: AnimType.BOTTOMSLIDE,
+                      title: 'Alert',
+                      desc: 'Do you want to delete this activity?',
+                      btnCancelText: 'Cancel',
+                      btnCancelOnPress: () {},
+                      btnOkOnPress: () async {
+                        int rowsEffected = await DatabaseHelper.instance
+                            .deleteActivity(
+                                widget.personName, datas[index]['actName']);
+                        print(rowsEffected);
+                      },
+                    ).show();
+                    getActivitiesFromDatabase();
+                  },
+                ).show();
+                getActivitiesFromDatabase();
+              },
               leading: Text(
                 onlyTimeFormat(datas[index]['init']),
                 style: TextStyle(

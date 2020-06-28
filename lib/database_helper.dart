@@ -78,11 +78,11 @@ class DatabaseHelper {
     return await db.query(table);
   }
 
-  Future<int> update(Map<String, dynamic> row) async {
+  Future<int> update(
+      String personName, String activityName, Map<String, dynamic> row) async {
     Database db = await instance.database;
-    int id = row[columnId];
-    return await db
-        .update(_tableName, row, where: '$columnId=?', whereArgs: [id]);
+    return await db.update(personName, row,
+        where: '$columnactName=?', whereArgs: [activityName]);
   }
 
   Future delete(String table) async {
@@ -90,6 +90,12 @@ class DatabaseHelper {
     await db.delete(personNameTable,
         where: '$columnPersonName=?', whereArgs: [table]);
     return await db.delete(table);
+  }
+
+  Future deleteActivity(String name, String activityName) async {
+    Database db = await instance.database;
+    return await db
+        .delete(name, where: '$columnactName=?', whereArgs: [activityName]);
   }
 
   Future createNewTable(String newTable) async {
