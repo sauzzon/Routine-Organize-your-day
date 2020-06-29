@@ -6,7 +6,6 @@ import 'package:sqflite/sqflite.dart';
 class DatabaseHelper {
   static final _dbName = 'myDatabase.db';
   static final _dbVersion = 1;
-  static final _tableName = 'myTable';
   static final columnId = 'id';
   static final columnactName = 'actName';
   static final columnInitial = 'init';
@@ -40,10 +39,6 @@ class DatabaseHelper {
   }
 
   //returns the primary key(int) automatically generated
-  Future<int> insert(Map<String, dynamic> row) async {
-    Database db = await instance.database;
-    return await db.insert(_tableName, row);
-  }
 
   Future<int> insertPersonName(Map<String, dynamic> row) async {
     Database db = await instance.database;
@@ -52,13 +47,9 @@ class DatabaseHelper {
 
   Future<int> insertActivities(
       String personName, Map<String, dynamic> row) async {
+    String woSpace = personName.replaceAll(' ', '');
     Database db = await instance.database;
-    return await db.insert(personName, row);
-  }
-
-  Future<List<Map<String, dynamic>>> queryAll() async {
-    Database db = await instance.database;
-    return await db.query(_tableName);
+    return await db.insert(woSpace, row);
   }
 
   Future<List<Map<String, dynamic>>> queryPersonNames() async {
@@ -68,14 +59,15 @@ class DatabaseHelper {
 
   Future<List<Map<String, dynamic>>> queryActivities(String table) async {
     Database db = await instance.database;
-    return await db.query(table);
+    String woSpace = table.replaceAll(' ', '');
+    return await db.query(woSpace);
   }
 
   Future<int> update(
       String personName, int iD, Map<String, dynamic> row) async {
     Database db = await instance.database;
-    return await db
-        .update(personName, row, where: '$columnId=?', whereArgs: [iD]);
+    String woSpace = personName.replaceAll(' ', '');
+    return await db.update(woSpace, row, where: '$columnId=?', whereArgs: [iD]);
   }
 
   Future delete(String table) async {
@@ -87,26 +79,29 @@ class DatabaseHelper {
 
   Future deleteRoutine(String tableName) async {
     Database db = await instance.database;
+    String woSpace = tableName.replaceAll(' ', '');
     db.execute('''
-              DROP TABLE IF EXISTS $tableName
+              DROP TABLE IF EXISTS $woSpace
     ''');
   }
 
   Future deleteActivity(String name, int iD) async {
+    String woSpace = name.replaceAll(' ', '');
     Database db = await instance.database;
-    return await db.delete(name, where: '$columnId=?', whereArgs: [iD]);
+    return await db.delete(woSpace, where: '$columnId=?', whereArgs: [iD]);
   }
 
   Future createNewTable(String newTable) async {
+    String woSpace = newTable.replaceAll(' ', '');
     Database db = await instance.database;
     db.execute('''
-        CREATE TABLE $newTable(
+        CREATE TABLE $woSpace(
         $columnId INTEGER PRIMARY KEY,
         $columnactName TEXT NOT NULL,
         $columnInitial TEXT NOT NULL,
         $columnFinal TEXT NOT NULL)
     ''');
-    print('New table $newTable is created');
+    print('New table $woSpace is created');
     return null;
   }
 }

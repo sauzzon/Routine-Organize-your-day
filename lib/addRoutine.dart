@@ -187,8 +187,10 @@ class _AddRoutineState extends State<AddRoutine> {
                       int length = temp.length;
                       for (int j = 0; j < length; j++) {
                         String caseInsensitiveName = temp[j]['personName'];
-                        if (caseInsensitiveName.toLowerCase() ==
-                            _personName.toLowerCase()) {
+                        if (caseInsensitiveName
+                                .toLowerCase()
+                                .replaceAll(' ', '') ==
+                            _personName.toLowerCase().replaceAll(' ', '')) {
                           isPersonNameRepeated = true;
                           break;
                         }
