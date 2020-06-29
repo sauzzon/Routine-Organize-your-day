@@ -80,9 +80,16 @@ class DatabaseHelper {
 
   Future delete(String table) async {
     Database db = await instance.database;
-    await db.delete(personNameTable,
+
+    return await db.delete(personNameTable,
         where: '$columnPersonName=?', whereArgs: [table]);
-    return await db.delete(table);
+  }
+
+  Future deleteRoutine(String tableName) async {
+    Database db = await instance.database;
+    db.execute('''
+              DROP TABLE IF EXISTS $tableName
+    ''');
   }
 
   Future deleteActivity(String name, int iD) async {

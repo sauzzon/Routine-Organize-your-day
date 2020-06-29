@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'database_helper.dart';
+import 'package:intl/intl.dart';
 
 class AddRoutine extends StatefulWidget {
   AddRoutine({Key key, this.currentDate}) : super(key: key);
@@ -9,6 +10,11 @@ class AddRoutine extends StatefulWidget {
 }
 
 class _AddRoutineState extends State<AddRoutine> {
+  TimeOfDay stringToTimeOfDay(String tod) {
+    final format = DateFormat.jm();
+    return TimeOfDay.fromDateTime(format.parse(tod));
+  }
+
   Widget getActivity() {
     TextEditingController timeCtl1 = TextEditingController();
     TextEditingController timeCtl2 = TextEditingController();
@@ -49,19 +55,18 @@ class _AddRoutineState extends State<AddRoutine> {
                   await showTimePicker(context: context, initialTime: time1);
               if (picked1 != null && picked1 != time1) {
                 timeCtl1.text = picked1.format(context);
-
-                DateTime temp1 = DateTime(
-                    widget.currentDate.year,
-                    widget.currentDate.month,
-                    widget.currentDate.day,
-                    picked1.hour,
-                    picked1.minute,
-                    0);
-                _initTime.add(temp1);
-                setState(() {
-                  time1 = picked1;
-                });
               }
+            },
+            onSaved: (String tod) {
+              TimeOfDay startTime = stringToTimeOfDay(tod);
+              DateTime temp1 = DateTime(
+                  widget.currentDate.year,
+                  widget.currentDate.month,
+                  widget.currentDate.day,
+                  startTime.hour,
+                  startTime.minute,
+                  0);
+              _initTime.add(temp1);
             },
             validator: (value) {
               if (value.isEmpty) {
@@ -84,22 +89,24 @@ class _AddRoutineState extends State<AddRoutine> {
             onTap: () async {
               TimeOfDay time2 = TimeOfDay.now();
               FocusScope.of(context).requestFocus(new FocusNode());
-              TimeOfDay picked2 =
-                  await showTimePicker(context: context, initialTime: time2);
+              TimeOfDay picked2 = await showTimePicker(
+                context: context,
+                initialTime: time2,
+              );
               if (picked2 != null && picked2 != time2) {
                 timeCtl2.text = picked2.format(context);
-                DateTime temp2 = DateTime(
-                    widget.currentDate.year,
-                    widget.currentDate.month,
-                    widget.currentDate.day,
-                    picked2.hour,
-                    picked2.minute,
-                    0);
-                _endTime.add(temp2);
-                setState(() {
-                  time2 = picked2;
-                });
               }
+            },
+            onSaved: (String tod) {
+              TimeOfDay endTime = stringToTimeOfDay(tod);
+              DateTime temp2 = DateTime(
+                  widget.currentDate.year,
+                  widget.currentDate.month,
+                  widget.currentDate.day,
+                  endTime.hour,
+                  endTime.minute,
+                  0);
+              _endTime.add(temp2);
             },
             validator: (value) {
               if (value.isEmpty) {
@@ -179,7 +186,9 @@ class _AddRoutineState extends State<AddRoutine> {
                           await DatabaseHelper.instance.queryPersonNames();
                       int length = temp.length;
                       for (int j = 0; j < length; j++) {
-                        if (temp[j]['personName'] == _personName) {
+                        String caseInsensitiveName = temp[j]['personName'];
+                        if (caseInsensitiveName.toLowerCase() ==
+                            _personName.toLowerCase()) {
                           isPersonNameRepeated = true;
                           break;
                         }

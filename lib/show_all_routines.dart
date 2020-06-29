@@ -64,6 +64,8 @@ class _ShowAllRoutinesState extends State<ShowAllRoutines> {
                       int rowsEffected = await DatabaseHelper.instance
                           .delete(nameListFromDatabase[index]['personName']);
                       print(rowsEffected);
+                      DatabaseHelper.instance.deleteRoutine(
+                          nameListFromDatabase[index]['personName']);
                     },
                   ).show();
                   getNameListFromDatabase();
