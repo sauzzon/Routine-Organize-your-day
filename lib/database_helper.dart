@@ -35,9 +35,32 @@ class DatabaseHelper {
          $columnId INTEGER PRIMARY KEY,
        $columnPersonName TEXT NOT NULL)
     ''');
+    createWeeklyTable();
     return null;
   }
 
+  createWeeklyTable() async {
+    List<String> weekDays = [
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday'
+    ];
+    Database db = await instance.database;
+    for (int i = 0; i < weekDays.length; i++) {
+      String dayName = weekDays[i];
+      db.execute('''
+       CREATE TABLE $dayName(
+        $columnId INTEGER PRIMARY KEY,
+        $columnactName TEXT NOT NULL,
+        $columnInitial TEXT NOT NULL,
+        $columnFinal TEXT NOT NULL)
+      ''');
+    }
+  }
   //returns the primary key(int) automatically generated
 
   Future<int> insertPersonName(Map<String, dynamic> row) async {

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'local_notifications.dart';
 import 'database_helper.dart';
 import 'nav_drawer.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -12,6 +13,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   DateTime currentDateTime = DateTime.now();
+  String currentDay;
   @override
   void initState() {
     Timer.periodic(
@@ -62,6 +64,7 @@ class _HomePageState extends State<HomePage> {
     if (this.mounted) {
       setState(() {
         currentDateTime = now;
+        currentDay = DateFormat('EEEE').format(now);
       });
     }
   }
@@ -69,7 +72,10 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: NavDrawer(currentDateTime: currentDateTime),
+      drawer: NavDrawer(
+        currentDateTime: currentDateTime,
+        currentDay: currentDay,
+      ),
       appBar: AppBar(
         backgroundColor: Colors.red,
         title: Text('Daily Routine'),

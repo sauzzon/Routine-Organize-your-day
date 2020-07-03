@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:saujanapp/AddWeeklyRoutine.dart';
+import 'package:saujanapp/ShowWeeklyRoutine.dart';
 import 'addRoutine.dart';
 import 'show_all_routines.dart';
 
 class NavDrawer extends StatelessWidget {
   final DateTime currentDateTime;
-  NavDrawer({this.currentDateTime});
+  final String currentDay;
+  NavDrawer({this.currentDateTime, this.currentDay});
   TextStyle getTextStyle() {
     return TextStyle(fontSize: 15, letterSpacing: 0.5);
   }
@@ -66,6 +69,46 @@ class NavDrawer extends StatelessWidget {
                 Navigator.of(context).pop();
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => ShowAllRoutines()));
+              },
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.add_circle,
+                color: Colors.red,
+              ),
+              title: Text(
+                'Add Weekly Routine',
+                style: getTextStyle(),
+              ),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AddWeeklyRoutine(
+                            currentDate: currentDateTime,
+                          )),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.library_books,
+                color: Colors.red,
+              ),
+              title: Text(
+                'Show Weekly Routine',
+                style: getTextStyle(),
+              ),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ShowWeeklyRoutine(
+                            currentDay: currentDay,
+                          )),
+                );
               },
             ),
             ListTile(

@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
-import 'database_helper.dart';
 import 'package:intl/intl.dart';
+import 'daydropdownlist.dart';
+import 'database_helper.dart';
 
-class AddRoutine extends StatefulWidget {
-  AddRoutine({Key key, this.currentDate}) : super(key: key);
-  final DateTime currentDate;
+class AddWeeklyRoutine extends StatefulWidget {
   @override
-  _AddRoutineState createState() => _AddRoutineState();
+  _AddWeeklyRoutineState createState() => _AddWeeklyRoutineState();
+  AddWeeklyRoutine({Key key, this.currentDate}) : super(key: key);
+  final DateTime currentDate;
 }
 
-class _AddRoutineState extends State<AddRoutine> {
+class _AddWeeklyRoutineState extends State<AddWeeklyRoutine> {
+  void updateDay(String newValue) {
+    setState(() {
+      dropdownValue = newValue;
+    });
+  }
+
   TimeOfDay stringToTimeOfDay(String tod) {
     final format = DateFormat.jm();
     return TimeOfDay.fromDateTime(format.parse(tod));
@@ -129,28 +136,9 @@ class _AddRoutineState extends State<AddRoutine> {
             return;
           }
           _formkey.currentState.save();
-
-          List<Map<String, dynamic>> temp =
-              await DatabaseHelper.instance.queryPersonNames();
-          int length = temp.length;
-          for (int j = 0; j < length; j++) {
-            String caseInsensitiveName = temp[j]['personName'];
-            if (caseInsensitiveName.toLowerCase().replaceAll(' ', '') ==
-                _personName.toLowerCase().replaceAll(' ', '')) {
-              isPersonNameRepeated = true;
-              break;
-            }
-          }
-          if (!isPersonNameRepeated) {
-            DatabaseHelper.instance.createNewTable(_personName);
-            DatabaseHelper.instance.insertPersonName(
-                {DatabaseHelper.columnPersonName: _personName});
-            isPersonNameRepeated = false;
-          }
-
           for (int index = 0; index < _actName.length; index++) {
             int i =
-                await DatabaseHelper.instance.insertActivities(_personName, {
+                await DatabaseHelper.instance.insertActivities(dropdownValue, {
               DatabaseHelper.columnactName: _actName[index],
               DatabaseHelper.columnInitial: _initTime[index].toIso8601String(),
               DatabaseHelper.columnFinal: _endTime[index].toIso8601String(),
@@ -172,22 +160,20 @@ class _AddRoutineState extends State<AddRoutine> {
     }
   }
 
-  String _personName;
+  bool showSaveButton = false;
+  String dropdownValue = 'Sunday';
   List<String> _actName = [];
   List<DateTime> _initTime = [];
   List<DateTime> _endTime = [];
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   List<Widget> activities = [];
-  bool isPersonNameRepeated = false;
-  bool showSaveButton = false;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red,
         title: Text(
-          'Add Routine',
+          'Add Weekly Routine',
         ),
       ),
       body: SingleChildScrollView(
@@ -198,26 +184,9 @@ class _AddRoutineState extends State<AddRoutine> {
               key: _formkey,
               child: Column(
                 children: <Widget>[
-                  TextFormField(
-                    style: TextStyle(
-                      fontSize: 25,
-                    ),
-                    decoration: InputDecoration(
-                      hintText: 'Your Name',
-                      hintStyle: TextStyle(
-                        fontSize: 20,
-                      ),
-                    ),
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return 'Name is required';
-                      } else
-                        return null;
-                    },
-                    onSaved: (String value) {
-                      _personName = value;
-                      print(_personName);
-                    },
+                  DayDropDownList(
+                    dropdownValue: dropdownValue,
+                    updateDay: updateDay,
                   ),
                   SizedBox(
                     height: 30,
@@ -243,9 +212,7 @@ class _AddRoutineState extends State<AddRoutine> {
             activities.add(getActivity());
           });
         },
-        child: Icon(
-          Icons.add,
-        ),
+        child: Icon(Icons.add),
       ),
     );
   }
