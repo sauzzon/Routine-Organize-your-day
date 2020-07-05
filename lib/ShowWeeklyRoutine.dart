@@ -92,13 +92,13 @@ class _ShowWeeklyRoutineState extends State<ShowWeeklyRoutine> {
           endTime.isAfter(currentDateTime)) {
         return Colors.green;
       } else if (startTime.isAfter(currentDateTime)) {
-        return Colors.blue[700];
+        return Colors.blue[300];
       } else if (startTime.isBefore(currentDateTime) &&
           endTime.isBefore(currentDateTime)) {
-        return Colors.red;
+        return Colors.orange;
       }
     } else {
-      return Colors.grey;
+      return Colors.redAccent[100];
     }
     return null;
   }
@@ -118,6 +118,7 @@ class _ShowWeeklyRoutineState extends State<ShowWeeklyRoutine> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.red,
         title: Text('Weekly Routine'),
       ),
       body: Column(
@@ -127,7 +128,7 @@ class _ShowWeeklyRoutineState extends State<ShowWeeklyRoutine> {
           ),
           ListTile(
             leading: RaisedButton(
-              color: Colors.blue[500],
+              color: Colors.red,
               child: Icon(
                 Icons.arrow_back,
                 color: Colors.white,
@@ -142,11 +143,11 @@ class _ShowWeeklyRoutineState extends State<ShowWeeklyRoutine> {
               style: TextStyle(
                 fontSize: 23,
                 fontWeight: FontWeight.bold,
-                color: Colors.blue,
+                color: Colors.red,
               ),
             ),
             trailing: RaisedButton(
-              color: Colors.blue[500],
+              color: Colors.red,
               child: Icon(
                 Icons.arrow_forward,
                 color: Colors.white,
@@ -260,7 +261,7 @@ class _ShowWeeklyRoutineState extends State<ShowWeeklyRoutine> {
           );
           getActivitiesFromDatabase();
         },
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.red,
         child: Icon(Icons.add),
       ),
     );

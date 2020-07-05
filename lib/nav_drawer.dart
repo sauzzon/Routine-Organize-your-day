@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:saujanapp/AddWeeklyRoutine.dart';
 import 'package:saujanapp/ShowWeeklyRoutine.dart';
+import 'package:saujanapp/show_notes.dart';
+import 'package:saujanapp/show_reminders.dart';
 
 class NavDrawer extends StatelessWidget {
   final DateTime currentDateTime;
@@ -71,6 +73,44 @@ class NavDrawer extends StatelessWidget {
                       builder: (context) => ShowWeeklyRoutine(
                             currentDay: currentDay,
                           )),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.book,
+                color: Colors.red,
+              ),
+              title: Text(
+                'Notes',
+                style: getTextStyle(),
+              ),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Notes(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.alarm,
+                color: Colors.red,
+              ),
+              title: Text(
+                'Reminders',
+                style: getTextStyle(),
+              ),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Reminders(),
+                  ),
                 );
               },
             ),
