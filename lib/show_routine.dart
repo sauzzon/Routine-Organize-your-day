@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'database_helper.dart';
 import 'edit_activity.dart';
-import 'AddWeeklyRoutine.dart';
+import 'add_routine.dart';
 
-class ShowWeeklyRoutine extends StatefulWidget {
+class ShowDailyRoutine extends StatefulWidget {
   final String currentDay;
-  ShowWeeklyRoutine({Key key, this.currentDay}) : super(key: key);
+  ShowDailyRoutine({Key key, this.currentDay}) : super(key: key);
   @override
-  _ShowWeeklyRoutineState createState() => _ShowWeeklyRoutineState();
+  _ShowDailyRoutineState createState() => _ShowDailyRoutineState();
 }
 
-class _ShowWeeklyRoutineState extends State<ShowWeeklyRoutine> {
+class _ShowDailyRoutineState extends State<ShowDailyRoutine> {
   DateTime currentDateTime = DateTime.now();
   @override
   void initState() {
@@ -119,7 +119,7 @@ class _ShowWeeklyRoutineState extends State<ShowWeeklyRoutine> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red,
-        title: Text('Weekly Routine'),
+        title: Text('Daily Routine'),
       ),
       body: Column(
         children: <Widget>[
@@ -253,7 +253,7 @@ class _ShowWeeklyRoutineState extends State<ShowWeeklyRoutine> {
           await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => AddWeeklyRoutine(
+              builder: (context) => AddDailyRoutine(
                 currentDate: currentDateTime,
                 currentDay: daysOfWeek[dayNumber],
               ),

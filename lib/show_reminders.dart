@@ -89,9 +89,12 @@ class _RemindersState extends State<Reminders> {
                       );
                       getRemindersFromDatabase();
                     },
-                    leading: Icon(
-                      Icons.alarm,
-                      color: Colors.white,
+                    leading: Padding(
+                      padding: EdgeInsets.only(top: 6),
+                      child: Icon(
+                        Icons.alarm,
+                        color: Colors.white,
+                      ),
                     ),
                     trailing: FlatButton(
                       onPressed: () async {

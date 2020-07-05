@@ -44,7 +44,10 @@ class _EditActivityState extends State<EditActivity> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: Colors.red,
+        title: Text('Edit Routine'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Form(
@@ -171,9 +174,9 @@ class _EditActivityState extends State<EditActivity> {
 
                     Navigator.pop(context);
                   },
-                  color: Colors.blue,
+                  color: Colors.red,
                   child: Text(
-                    'Update',
+                    'Save',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 17,

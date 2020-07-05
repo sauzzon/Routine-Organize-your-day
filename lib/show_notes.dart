@@ -56,9 +56,12 @@ class _NotesState extends State<Notes> {
                       );
                       getNotesFromDatabase();
                     },
-                    leading: Icon(
-                      Icons.assignment,
-                      color: Colors.deepOrange,
+                    leading: Padding(
+                      padding: EdgeInsets.only(top: 6),
+                      child: Icon(
+                        Icons.assignment,
+                        color: Colors.deepOrange,
+                      ),
                     ),
                     trailing: FlatButton(
                       onPressed: () async {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:saujanapp/AddWeeklyRoutine.dart';
-import 'package:saujanapp/ShowWeeklyRoutine.dart';
+import 'package:saujanapp/add_routine.dart';
+import 'package:saujanapp/show_routine.dart';
 import 'package:saujanapp/show_notes.dart';
 import 'package:saujanapp/show_reminders.dart';
 
@@ -23,25 +23,19 @@ class NavDrawer extends StatelessWidget {
             DrawerHeader(
               child: Container(),
               decoration: BoxDecoration(
-                  color: Colors.red,
-                  image: DecorationImage(
-                      image: AssetImage('assets/images/cover.png'))),
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.input,
                 color: Colors.red,
+                image: DecorationImage(
+                  image: AssetImage('assets/images/cover.png'),
+                ),
               ),
-              title: Text('Welcome', style: getTextStyle()),
-              onTap: () => {Navigator.of(context).pop()},
             ),
             ListTile(
               leading: Icon(
-                Icons.add_circle,
+                Icons.calendar_today,
                 color: Colors.red,
               ),
               title: Text(
-                'Add Weekly Routine',
+                'Daily Routine',
                 style: getTextStyle(),
               ),
               onTap: () {
@@ -49,8 +43,7 @@ class NavDrawer extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => AddWeeklyRoutine(
-                            currentDate: currentDateTime,
+                      builder: (context) => ShowDailyRoutine(
                             currentDay: currentDay,
                           )),
                 );
@@ -58,27 +51,7 @@ class NavDrawer extends StatelessWidget {
             ),
             ListTile(
               leading: Icon(
-                Icons.library_books,
-                color: Colors.red,
-              ),
-              title: Text(
-                'Show Weekly Routine',
-                style: getTextStyle(),
-              ),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ShowWeeklyRoutine(
-                            currentDay: currentDay,
-                          )),
-                );
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.book,
+                Icons.assignment,
                 color: Colors.red,
               ),
               title: Text(

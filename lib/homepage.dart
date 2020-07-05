@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage> {
       ),
       appBar: AppBar(
         backgroundColor: Colors.red,
-        title: Text('Daily Routine'),
+        title: Text('Homepage'),
       ),
       body: SafeArea(
         child: Padding(

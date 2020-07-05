@@ -3,16 +3,16 @@ import 'package:intl/intl.dart';
 import 'daydropdownlist.dart';
 import 'database_helper.dart';
 
-class AddWeeklyRoutine extends StatefulWidget {
+class AddDailyRoutine extends StatefulWidget {
   @override
-  _AddWeeklyRoutineState createState() => _AddWeeklyRoutineState();
-  AddWeeklyRoutine({Key key, this.currentDate, this.currentDay})
+  _AddDailyRoutineState createState() => _AddDailyRoutineState();
+  AddDailyRoutine({Key key, this.currentDate, this.currentDay})
       : super(key: key);
   final DateTime currentDate;
   final String currentDay;
 }
 
-class _AddWeeklyRoutineState extends State<AddWeeklyRoutine> {
+class _AddDailyRoutineState extends State<AddDailyRoutine> {
   @override
   void initState() {
     super.initState();
@@ -181,7 +181,7 @@ class _AddWeeklyRoutineState extends State<AddWeeklyRoutine> {
       appBar: AppBar(
         backgroundColor: Colors.red,
         title: Text(
-          'Add Weekly Routine',
+          'Add Routine',
         ),
       ),
       body: SingleChildScrollView(
