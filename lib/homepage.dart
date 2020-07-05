@@ -52,7 +52,24 @@ class _HomePageState extends State<HomePage> {
           startTime.minute == currentDateTime.minute &&
           startTime.second == currentDateTime.second) {
         LocalNotification localNotification = LocalNotification();
-        localNotification.showNotifications(activityName);
+        localNotification.showNotifications('Routine', activityName);
+      }
+    }
+    List<Map<String, dynamic>> remindersFromDatabase =
+        await DatabaseHelper.instance.queryReminders();
+    int newIndex = remindersFromDatabase.length;
+    for (int i = 0; i < newIndex; i++) {
+      String reminderTitle = remindersFromDatabase[i]['reminderTitle'];
+      String reminderTimeText = remindersFromDatabase[i]['timeOfReminder'];
+      DateTime reminderTime = DateTime.parse(reminderTimeText);
+      if (reminderTime.year == currentDateTime.year &&
+          reminderTime.month == currentDateTime.month &&
+          reminderTime.day == currentDateTime.day &&
+          reminderTime.hour == currentDateTime.hour &&
+          reminderTime.minute == currentDateTime.minute &&
+          reminderTime.second == currentDateTime.second) {
+        LocalNotification localNotification = LocalNotification();
+        localNotification.showNotifications('Reminder', reminderTitle);
       }
     }
   }
