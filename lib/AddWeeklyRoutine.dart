@@ -6,11 +6,19 @@ import 'database_helper.dart';
 class AddWeeklyRoutine extends StatefulWidget {
   @override
   _AddWeeklyRoutineState createState() => _AddWeeklyRoutineState();
-  AddWeeklyRoutine({Key key, this.currentDate}) : super(key: key);
+  AddWeeklyRoutine({Key key, this.currentDate, this.currentDay})
+      : super(key: key);
   final DateTime currentDate;
+  final String currentDay;
 }
 
 class _AddWeeklyRoutineState extends State<AddWeeklyRoutine> {
+  @override
+  void initState() {
+    super.initState();
+    dropdownValue = widget.currentDay;
+  }
+
   void updateDay(String newValue) {
     setState(() {
       dropdownValue = newValue;
@@ -60,7 +68,7 @@ class _AddWeeklyRoutineState extends State<AddWeeklyRoutine> {
               FocusScope.of(context).requestFocus(new FocusNode());
               TimeOfDay picked1 =
                   await showTimePicker(context: context, initialTime: time1);
-              if (picked1 != null && picked1 != time1) {
+              if (picked1 != null) {
                 timeCtl1.text = picked1.format(context);
               }
             },
@@ -100,7 +108,7 @@ class _AddWeeklyRoutineState extends State<AddWeeklyRoutine> {
                 context: context,
                 initialTime: time2,
               );
-              if (picked2 != null && picked2 != time2) {
+              if (picked2 != null) {
                 timeCtl2.text = picked2.format(context);
               }
             },
@@ -161,7 +169,7 @@ class _AddWeeklyRoutineState extends State<AddWeeklyRoutine> {
   }
 
   bool showSaveButton = false;
-  String dropdownValue = 'Sunday';
+  String dropdownValue;
   List<String> _actName = [];
   List<DateTime> _initTime = [];
   List<DateTime> _endTime = [];

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:saujanapp/AddWeeklyRoutine.dart';
 import 'package:saujanapp/ShowWeeklyRoutine.dart';
-import 'addRoutine.dart';
-import 'show_all_routines.dart';
 
 class NavDrawer extends StatelessWidget {
   final DateTime currentDateTime;
@@ -41,42 +39,6 @@ class NavDrawer extends StatelessWidget {
                 color: Colors.red,
               ),
               title: Text(
-                'Add Routine',
-                style: getTextStyle(),
-              ),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AddRoutine(
-                      currentDate: currentDateTime,
-                    ),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.library_books,
-                color: Colors.red,
-              ),
-              title: Text(
-                'Show Routines',
-                style: getTextStyle(),
-              ),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ShowAllRoutines()));
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.add_circle,
-                color: Colors.red,
-              ),
-              title: Text(
                 'Add Weekly Routine',
                 style: getTextStyle(),
               ),
@@ -87,6 +49,7 @@ class NavDrawer extends StatelessWidget {
                   MaterialPageRoute(
                       builder: (context) => AddWeeklyRoutine(
                             currentDate: currentDateTime,
+                            currentDay: currentDay,
                           )),
                 );
               },

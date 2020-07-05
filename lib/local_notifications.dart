@@ -23,11 +23,11 @@ class LocalNotification {
         onSelectNotification: onSelectNotification);
   }
 
-  void showNotifications(String name, String activity) async {
-    await notification(name, activity);
+  void showNotifications(String activity) async {
+    await notification(activity);
   }
 
-  Future<void> notification(String name, String activity) async {
+  Future<void> notification(String activity) async {
     AndroidNotificationDetails androidNotificationDetails =
         AndroidNotificationDetails(
       'Channel ID',
@@ -41,7 +41,7 @@ class LocalNotification {
     NotificationDetails notificationDetails =
         NotificationDetails(androidNotificationDetails, iosNotificationDetails);
     await flutterLocalNotificationsPlugin.show(
-        0, 'Hey $name', 'Its time to $activity', notificationDetails);
+        0, 'Routine Alert', 'Its time to $activity', notificationDetails);
   }
 
   Future onSelectNotification(String payLoad) {

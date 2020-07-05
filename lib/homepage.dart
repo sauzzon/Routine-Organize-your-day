@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'local_notifications.dart';
-import 'database_helper.dart';
 import 'nav_drawer.dart';
 import 'package:intl/intl.dart';
+import 'local_notifications.dart';
+import 'database_helper.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -20,42 +20,10 @@ class _HomePageState extends State<HomePage> {
       Duration(seconds: 1),
       (Timer t) {
         _getDate();
-        checkNotification();
+        checkNotifications();
       },
     );
     super.initState();
-  }
-
-  checkNotification() async {
-    List<Map<String, dynamic>> namesFromDatabase =
-        await DatabaseHelper.instance.queryPersonNames();
-    int len = namesFromDatabase.length;
-    for (int i = 0; i < len; i++) {
-      List<Map<String, dynamic>> activitiesFromDatabase = await DatabaseHelper
-          .instance
-          .queryActivities(namesFromDatabase[i]['personName']);
-      int index = activitiesFromDatabase.length;
-      for (int j = 0; j < index; j++) {
-        String activityName = activitiesFromDatabase[j]['actName'];
-        String startTimeText = activitiesFromDatabase[j]['init'];
-        DateTime temp = DateTime.parse(startTimeText);
-        DateTime startTime = DateTime(
-            currentDateTime.year,
-            currentDateTime.month,
-            currentDateTime.day,
-            temp.hour,
-            temp.minute,
-            temp.second);
-
-        if (startTime.hour == currentDateTime.hour &&
-            startTime.minute == currentDateTime.minute &&
-            startTime.second == currentDateTime.second) {
-          LocalNotification localNotification = LocalNotification();
-          localNotification.showNotifications(
-              namesFromDatabase[i]['personName'], activityName);
-        }
-      }
-    }
   }
 
   void _getDate() {
@@ -66,6 +34,26 @@ class _HomePageState extends State<HomePage> {
         currentDateTime = now;
         currentDay = DateFormat('EEEE').format(now);
       });
+    }
+  }
+
+  void checkNotifications() async {
+    List<Map<String, dynamic>> activitiesFromDatabase =
+        await DatabaseHelper.instance.queryActivities(currentDay);
+    int index = activitiesFromDatabase.length;
+    for (int j = 0; j < index; j++) {
+      String activityName = activitiesFromDatabase[j]['actName'];
+      String startTimeText = activitiesFromDatabase[j]['init'];
+      DateTime temp = DateTime.parse(startTimeText);
+      DateTime startTime = DateTime(currentDateTime.year, currentDateTime.month,
+          currentDateTime.day, temp.hour, temp.minute, temp.second);
+
+      if (startTime.hour == currentDateTime.hour &&
+          startTime.minute == currentDateTime.minute &&
+          startTime.second == currentDateTime.second) {
+        LocalNotification localNotification = LocalNotification();
+        localNotification.showNotifications(activityName);
+      }
     }
   }
 

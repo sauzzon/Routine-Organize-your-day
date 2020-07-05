@@ -1,40 +1,44 @@
 import 'package:flutter/material.dart';
 import 'database_helper.dart';
+import 'package:intl/intl.dart';
 
-class AddOrEditActivity extends StatefulWidget {
-  AddOrEditActivity(
-      {Key key, this.currentDate, this.personName, this.activityName,this.activityID})
+class EditActivity extends StatefulWidget {
+  EditActivity(
+      {Key key,
+      this.currentDate,
+      this.day,
+      this.activityName,
+      this.activityID,
+      this.initialTime,
+      this.endTime})
       : super(key: key);
   final DateTime currentDate;
-  final String personName;
+  final String day;
   final String activityName;
   final int activityID;
+  final String initialTime;
+  final String endTime;
   @override
-  _AddOrEditActivityState createState() => _AddOrEditActivityState();
+  _EditActivityState createState() => _EditActivityState();
 }
 
-class _AddOrEditActivityState extends State<AddOrEditActivity> {
+class _EditActivityState extends State<EditActivity> {
   String _newActivityName;
   String _newInitialTime;
   String _newFinalTime;
-  TextEditingController timeCtl1 = TextEditingController();
-  TextEditingController timeCtl2 = TextEditingController();
+  TextEditingController timeCtl1;
+  TextEditingController timeCtl2;
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-
-  String getButtonText() {
-    if (widget.activityName == 'Add New Activity') {
-      return 'ADD';
-    } else {
-      return 'Update';
-    }
+  @override
+  void initState() {
+    super.initState();
+    timeCtl1 = TextEditingController(text: widget.initialTime);
+    timeCtl2 = TextEditingController(text: widget.endTime);
   }
 
-  String getInitialActivityValue() {
-    if (widget.activityName != 'Add New Activity') {
-      return widget.activityName;
-    } else {
-      return null;
-    }
+  TimeOfDay stringToTimeOfDay(String tod) {
+    final format = DateFormat.jm();
+    return TimeOfDay.fromDateTime(format.parse(tod));
   }
 
   @override
@@ -53,7 +57,7 @@ class _AddOrEditActivityState extends State<AddOrEditActivity> {
                     Expanded(
                       flex: 2,
                       child: TextFormField(
-                        initialValue: getInitialActivityValue(),
+                        initialValue: widget.activityName,
                         style: TextStyle(
                           fontSize: 20,
                         ),
@@ -84,18 +88,20 @@ class _AddOrEditActivityState extends State<AddOrEditActivity> {
                           FocusScope.of(context).requestFocus(new FocusNode());
                           TimeOfDay picked1 = await showTimePicker(
                               context: context, initialTime: time1);
-                          if (picked1 != null && picked1 != time1) {
+                          if (picked1 != null) {
                             timeCtl1.text = picked1.format(context);
-
-                            DateTime temp1 = DateTime(
-                                widget.currentDate.year,
-                                widget.currentDate.month,
-                                widget.currentDate.day,
-                                picked1.hour,
-                                picked1.minute,
-                                0);
-                            _newInitialTime = temp1.toIso8601String();
                           }
+                        },
+                        onSaved: (String tod) {
+                          TimeOfDay startTime = stringToTimeOfDay(tod);
+                          DateTime temp1 = DateTime(
+                              widget.currentDate.year,
+                              widget.currentDate.month,
+                              widget.currentDate.day,
+                              startTime.hour,
+                              startTime.minute,
+                              0);
+                          _newInitialTime = temp1.toIso8601String();
                         },
                         validator: (value) {
                           if (value.isEmpty) {
@@ -120,17 +126,20 @@ class _AddOrEditActivityState extends State<AddOrEditActivity> {
                           FocusScope.of(context).requestFocus(new FocusNode());
                           TimeOfDay picked2 = await showTimePicker(
                               context: context, initialTime: time2);
-                          if (picked2 != null && picked2 != time2) {
+                          if (picked2 != null) {
                             timeCtl2.text = picked2.format(context);
-                            DateTime temp2 = DateTime(
-                                widget.currentDate.year,
-                                widget.currentDate.month,
-                                widget.currentDate.day,
-                                picked2.hour,
-                                picked2.minute,
-                                0);
-                            _newFinalTime = temp2.toIso8601String();
                           }
+                        },
+                        onSaved: (String tod) {
+                          TimeOfDay endTime = stringToTimeOfDay(tod);
+                          DateTime temp2 = DateTime(
+                              widget.currentDate.year,
+                              widget.currentDate.month,
+                              widget.currentDate.day,
+                              endTime.hour,
+                              endTime.minute,
+                              0);
+                          _newFinalTime = temp2.toIso8601String();
                         },
                         validator: (value) {
                           if (value.isEmpty) {
@@ -152,27 +161,19 @@ class _AddOrEditActivityState extends State<AddOrEditActivity> {
                     }
                     _formkey.currentState.save();
 
-                    if (widget.activityName == 'Add New Activity') {
-                      await DatabaseHelper.instance
-                          .insertActivities(widget.personName, {
-                        DatabaseHelper.columnactName: _newActivityName,
-                        DatabaseHelper.columnInitial: _newInitialTime,
-                        DatabaseHelper.columnFinal: _newFinalTime
-                      });
-                    } else {
-                      int updatedId = await DatabaseHelper.instance
-                          .update(widget.personName, widget.activityID, {
-                        DatabaseHelper.columnactName: _newActivityName,
-                        DatabaseHelper.columnInitial: _newInitialTime,
-                        DatabaseHelper.columnFinal: _newFinalTime,
-                      });
-                      print(updatedId);
-                    }
+                    int updatedId = await DatabaseHelper.instance
+                        .update(widget.day, widget.activityID, {
+                      DatabaseHelper.columnactName: _newActivityName,
+                      DatabaseHelper.columnInitial: _newInitialTime,
+                      DatabaseHelper.columnFinal: _newFinalTime,
+                    });
+                    print(updatedId);
+
                     Navigator.pop(context);
                   },
                   color: Colors.blue,
                   child: Text(
-                    getButtonText(),
+                    'Update',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 17,

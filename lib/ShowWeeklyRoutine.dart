@@ -3,7 +3,8 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'database_helper.dart';
-import 'add_or_edit_activity.dart';
+import 'edit_activity.dart';
+import 'AddWeeklyRoutine.dart';
 
 class ShowWeeklyRoutine extends StatefulWidget {
   final String currentDay;
@@ -24,7 +25,7 @@ class _ShowWeeklyRoutineState extends State<ShowWeeklyRoutine> {
       },
     );
     setDayNumber();
-    getNameListFromDatabase();
+    getActivitiesFromDatabase();
   }
 
   void setDayNumber() {
@@ -51,27 +52,31 @@ class _ShowWeeklyRoutineState extends State<ShowWeeklyRoutine> {
 
   void increaseDayNumber() {
     setState(() {
-      if (dayNumber < 6) {
+      if (dayNumber == 6)
+        dayNumber = 0;
+      else
         dayNumber++;
-      }
     });
-    getNameListFromDatabase();
+    getActivitiesFromDatabase();
   }
 
   void decreaseDayNumber() {
     setState(() {
-      if (dayNumber > 0) dayNumber--;
+      if (dayNumber == 0)
+        dayNumber = 6;
+      else
+        dayNumber--;
     });
-    getNameListFromDatabase();
+    getActivitiesFromDatabase();
   }
 
-  List<Map<String, dynamic>> nameListFromDatabase = [];
+  List<Map<String, dynamic>> activitiesFromDatabase = [];
 
-  getNameListFromDatabase() async {
+  getActivitiesFromDatabase() async {
     List<Map<String, dynamic>> temp =
         await DatabaseHelper.instance.queryActivities(daysOfWeek[dayNumber]);
     setState(() {
-      nameListFromDatabase = temp;
+      activitiesFromDatabase = temp;
     });
   }
 
@@ -156,11 +161,11 @@ class _ShowWeeklyRoutineState extends State<ShowWeeklyRoutine> {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: nameListFromDatabase.length,
+              itemCount: activitiesFromDatabase.length,
               itemBuilder: (BuildContext context, int index) {
                 return Card(
-                  color: getCardColor(nameListFromDatabase[index]['init'],
-                      nameListFromDatabase[index]['fin']),
+                  color: getCardColor(activitiesFromDatabase[index]['init'],
+                      activitiesFromDatabase[index]['fin']),
                   child: ListTile(
                     onLongPress: () async {
                       await AwesomeDialog(
@@ -175,16 +180,22 @@ class _ShowWeeklyRoutineState extends State<ShowWeeklyRoutine> {
                           await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => AddOrEditActivity(
+                                  builder: (context) => EditActivity(
                                         currentDate: currentDateTime,
-                                        personName: daysOfWeek[dayNumber],
+                                        day: daysOfWeek[dayNumber],
                                         activityName:
-                                            nameListFromDatabase[index]
+                                            activitiesFromDatabase[index]
                                                 ['actName'],
-                                        activityID: nameListFromDatabase[index]
-                                            ['id'],
+                                        activityID:
+                                            activitiesFromDatabase[index]['id'],
+                                        initialTime: onlyTimeFormat(
+                                            activitiesFromDatabase[index]
+                                                ['init']),
+                                        endTime: onlyTimeFormat(
+                                            activitiesFromDatabase[index]
+                                                ['fin']),
                                       )));
-                          getNameListFromDatabase();
+                          getActivitiesFromDatabase();
                         },
                         btnOkOnPress: () async {
                           await AwesomeDialog(
@@ -198,24 +209,24 @@ class _ShowWeeklyRoutineState extends State<ShowWeeklyRoutine> {
                             btnOkOnPress: () async {
                               int rowsEffected = await DatabaseHelper.instance
                                   .deleteActivity(daysOfWeek[dayNumber],
-                                      nameListFromDatabase[index]['id']);
+                                      activitiesFromDatabase[index]['id']);
                               print(rowsEffected);
                             },
                           ).show();
-                          getNameListFromDatabase();
+                          getActivitiesFromDatabase();
                         },
                       ).show();
-                      getNameListFromDatabase();
+                      getActivitiesFromDatabase();
                     },
                     leading: Text(
-                      onlyTimeFormat(nameListFromDatabase[index]['init']),
+                      onlyTimeFormat(activitiesFromDatabase[index]['init']),
                       style: TextStyle(
                         fontSize: 18,
                         color: Colors.white,
                       ),
                     ),
                     title: Text(
-                      nameListFromDatabase[index]['actName'],
+                      activitiesFromDatabase[index]['actName'],
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 20,
@@ -223,7 +234,7 @@ class _ShowWeeklyRoutineState extends State<ShowWeeklyRoutine> {
                       ),
                     ),
                     trailing: Text(
-                      onlyTimeFormat(nameListFromDatabase[index]['fin']),
+                      onlyTimeFormat(activitiesFromDatabase[index]['fin']),
                       style: TextStyle(
                         fontSize: 18,
                         color: Colors.white,
@@ -239,14 +250,15 @@ class _ShowWeeklyRoutineState extends State<ShowWeeklyRoutine> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => AddOrEditActivity(
-                        currentDate: currentDateTime,
-                        personName: daysOfWeek[dayNumber],
-                        activityName: 'Add New Activity',
-                      )));
-          getNameListFromDatabase();
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddWeeklyRoutine(
+                currentDate: currentDateTime,
+                currentDay: daysOfWeek[dayNumber],
+              ),
+            ),
+          );
+          getActivitiesFromDatabase();
         },
         backgroundColor: Colors.blue,
         child: Icon(Icons.add),
