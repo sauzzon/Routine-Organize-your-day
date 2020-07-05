@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'database_helper.dart';
 import 'add_reminder.dart';
@@ -9,10 +11,28 @@ class Reminders extends StatefulWidget {
 }
 
 class _RemindersState extends State<Reminders> {
+  DateTime currentDateTime = DateTime.now();
   @override
   void initState() {
     super.initState();
+    Timer.periodic(
+      Duration(seconds: 1),
+      (Timer t) {
+        _getTime();
+      },
+    );
+
     getRemindersFromDatabase();
+  }
+
+  void _getTime() {
+    final DateTime now = DateTime.now();
+
+    if (this.mounted) {
+      setState(() {
+        currentDateTime = now;
+      });
+    }
   }
 
   List<Map<String, dynamic>> remindersFromDatabase = [];
@@ -22,6 +42,14 @@ class _RemindersState extends State<Reminders> {
     setState(() {
       remindersFromDatabase = temp;
     });
+  }
+
+  Color getCardColor(String timeText) {
+    DateTime reminderTime = DateTime.parse(timeText);
+    if (reminderTime.isBefore(currentDateTime))
+      return Colors.orange;
+    else
+      return Colors.blue;
   }
 
   @override
@@ -41,6 +69,8 @@ class _RemindersState extends State<Reminders> {
               itemCount: remindersFromDatabase.length,
               itemBuilder: (BuildContext context, int index) {
                 return Card(
+                  color: getCardColor(
+                      remindersFromDatabase[index]['timeOfReminder']),
                   child: ListTile(
                     onTap: () async {
                       await Navigator.push(
@@ -61,7 +91,7 @@ class _RemindersState extends State<Reminders> {
                     },
                     leading: Icon(
                       Icons.alarm,
-                      color: Colors.deepOrange,
+                      color: Colors.white,
                     ),
                     trailing: FlatButton(
                       onPressed: () async {
@@ -84,7 +114,7 @@ class _RemindersState extends State<Reminders> {
                       },
                       child: Icon(
                         Icons.delete,
-                        color: Colors.deepOrange,
+                        color: Colors.white,
                       ),
                     ),
                     subtitle: Padding(
@@ -94,7 +124,8 @@ class _RemindersState extends State<Reminders> {
                         remindersFromDatabase[index]['timeOfReminder'],
                         style: TextStyle(
                           fontSize: 15,
-                          color: Colors.orange,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
                       ),
                     ),
@@ -106,7 +137,8 @@ class _RemindersState extends State<Reminders> {
                         textAlign: TextAlign.start,
                         style: TextStyle(
                           fontSize: 20,
-                          color: Colors.red,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
