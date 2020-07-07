@@ -5,6 +5,7 @@ import 'nav_drawer.dart';
 import 'package:intl/intl.dart';
 import 'local_notifications.dart';
 import 'database_helper.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -74,6 +75,18 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  List<String> bottomTexts = [
+    'Organize your Daily Activities',
+    'Keep record of everything',
+    'Do not miss anything',
+    'Be updated and organized'
+  ];
+  List<String> topTexts = [
+    'Daily Routine',
+    'Notes',
+    'Reminders',
+    'Get Started'
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,41 +96,64 @@ class _HomePageState extends State<HomePage> {
       ),
       appBar: AppBar(
         backgroundColor: Colors.red,
-        title: Text('Homepage'),
+        title: Text(
+          'Homepage',
+        ),
       ),
-      body: SafeArea(
-        child: Padding(
-            padding: const EdgeInsets.all(30.0),
-            child: Center(
-              child: Column(
-                children: <Widget>[
-                  Expanded(
-                    child: Image(
-                      image: AssetImage('assets/images/routine1.png'),
+      body: Swiper(
+        autoplay: true,
+        autoplayDelay: 4000,
+        itemBuilder: (BuildContext context, int index) {
+          return Column(
+            children: <Widget>[
+              Expanded(
+                  flex: 2,
+                  child: Container(
+                    color: Colors.orange,
+                    constraints: BoxConstraints.expand(),
+                    child: Center(
+                      child: Text(
+                        topTexts[index],
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 28,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
+                  )),
+              Expanded(
+                flex: 10,
+                child: Image(
+                  fit: BoxFit.fill,
+                  image: AssetImage(
+                    'assets/images/routine$index.png',
                   ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Text(
-                    'Routine - Organize your day',
-                    style: TextStyle(
-                      fontSize: 25,
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Expanded(
-                    child: Image(
-                      image: AssetImage('assets/images/routine2.png'),
-                    ),
-                  ),
-                ],
+                ),
               ),
-            )),
+              Expanded(
+                  flex: 4,
+                  child: Container(
+                    color: Colors.deepOrangeAccent,
+                    child: Center(
+                      child: Text(
+                        bottomTexts[index],
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  )),
+            ],
+          );
+        },
+        itemCount: 4,
+        scrollDirection: Axis.horizontal,
+        //control: SwiperControl(color: Colors.blue, size: 30),
+        pagination: SwiperPagination(),
+        controller: SwiperController(),
       ),
     );
   }
