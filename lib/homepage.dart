@@ -6,6 +6,9 @@ import 'package:intl/intl.dart';
 import 'local_notifications.dart';
 import 'database_helper.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'show_routine.dart';
+import 'show_notes.dart';
+import 'show_reminders.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -78,7 +81,7 @@ class _HomePageState extends State<HomePage> {
   List<String> bottomTexts = [
     'Organize your Daily Activities',
     'Keep record of everything',
-    'Do not miss anything',
+    "Don't miss anything",
     'Be updated and organized'
   ];
   List<String> topTexts = [
@@ -87,6 +90,42 @@ class _HomePageState extends State<HomePage> {
     'Reminders',
     'Get Started'
   ];
+  gotoNewScreen(int screenNumber) {
+    switch (screenNumber) {
+      case 0:
+        {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ShowDailyRoutine(
+                      currentDay: currentDay,
+                    )),
+          );
+          break;
+        }
+      case 1:
+        {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Notes(),
+            ),
+          );
+          break;
+        }
+      case 2:
+        {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Reminders(),
+            ),
+          );
+          break;
+        }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,7 +140,10 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: Swiper(
-        autoplay: true,
+        onTap: (int screenNumber) {
+          gotoNewScreen(screenNumber);
+        },
+        autoplay: false,
         autoplayDelay: 4000,
         itemBuilder: (BuildContext context, int index) {
           return Column(
@@ -140,7 +182,7 @@ class _HomePageState extends State<HomePage> {
                         bottomTexts[index],
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 25,
+                          fontSize: 26,
                           color: Colors.white,
                         ),
                       ),
